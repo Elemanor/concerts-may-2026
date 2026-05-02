@@ -543,7 +543,25 @@ const VENUES = {
     site:"https://thepowerplant.org/" },
   r401: { name:"401 Richmond — арт-хаб", addr:"401 Richmond St W",
     km:3.0, min:38, mapDest:"401+Richmond+St+W+Toronto",
-    site:"https://www.401richmond.com/" }
+    site:"https://www.401richmond.com/" },
+  ocad: { name:"OCAD University", addr:"100 McCaul St",
+    km:3.0, min:38, mapDest:"OCAD+University+100+McCaul+St+Toronto",
+    site:"https://www.ocadu.ca/event/gradex" },
+  cityhall: { name:"Nathan Phillips Square (City Hall)", addr:"100 Queen St W",
+    km:2.7, min:33, mapDest:"Nathan+Phillips+Square+100+Queen+St+W+Toronto",
+    site:"https://www.toronto.ca/explore-enjoy/festivals-events/" },
+  flowermarket: { name:"Toronto Flower Market — Stackt", addr:"28 Bathurst St",
+    km:4.5, min:55, mapDest:"Stackt+Market+28+Bathurst+St+Toronto",
+    site:"https://www.torontoflowermarket.ca/" },
+  bentway: { name:"The Bentway", addr:"250 Fort York Blvd",
+    km:4.5, min:55, mapDest:"The+Bentway+250+Fort+York+Blvd+Toronto",
+    site:"https://www.thebentway.ca/" },
+  uoft: { name:"UofT St. George Campus", addr:"27 King's College Circle",
+    km:2.4, min:29, mapDest:"University+of+Toronto+St+George+Toronto",
+    site:"https://www.sciencerendezvous.ca/" },
+  contact: { name:"CONTACT Photography Festival — разные места", addr:"по всему городу",
+    km:null, min:null, mapDest:"CONTACT+Photography+Festival+Toronto",
+    site:"https://scotiabankcontactphoto.com/" }
 };
 
 const TYPE_META = {
@@ -560,7 +578,9 @@ const TYPE_META = {
   gallery:  { icon:"🎨", label:"Галерея",       cat:"art"     },
   ceramics: { icon:"🏺", label:"Керамика",      cat:"art"     },
   fashion:  { icon:"👠", label:"Мода",          cat:"art"     },
-  heritage: { icon:"🏛️", label:"История города",cat:"art"     }
+  heritage: { icon:"🏛️", label:"История города",cat:"art"     },
+  photography:{ icon:"📷", label:"Фотография",   cat:"art"     },
+  street:   { icon:"🌳", label:"Город / прогулка",cat:"art"   }
 };
 
 const CATEGORIES = [
@@ -857,6 +877,48 @@ const EVENTS = [
   { date:"2026-05-31", time:"14:00", type:"fashion", venue:"bata",
     title:"Bata Shoe Museum — последнее воскресенье мая",
     desc:"Завершить май в Музее обуви: бесплатно по воскресеньям, до 17:00. Потом — фортепианный концерт в RCM в 19:00."
+  },
+
+  // ───── Городские фестивали и уличная культура ─────
+  { date:"2026-05-06", time:"13:00", type:"gallery", venue:"ocad",
+    title:"⭐ OCAD GradEx — выпускная выставка",
+    desc:"Главная выставка студенческого искусства OCAD: дизайн, мода, иллюстрация, скульптура, видео. Идёт 6–10 мая, бесплатно. Работы свежие, креативные, разные. Отлично совмещается с AGO рядом."
+  },
+  { date:"2026-05-09", time:"10:00", type:"festival", venue:"flowermarket",
+    title:"Toronto Flower Market",
+    desc:"Уличный цветочный рынок с местными фермерами и флористами. Тюльпаны, сирень, пионы. Кофе, выпечка. Очень майская атмосфера. До обеда."
+  },
+  { date:"2026-05-09", time:"11:00", type:"cultural", venue:"uoft",
+    title:"Science Rendezvous в UofT",
+    desc:"Канадский фестиваль науки в кампусе UofT: интерактивные эксперименты, лекции, демонстрации. Бесплатно, прогулка по красивому кампусу. Можно остаться сколько хочется."
+  },
+  { date:"2026-05-09", time:"13:00", type:"gallery", venue:"ocad",
+    title:"OCAD GradEx (день 4)",
+    desc:"Выставка студентов OCAD продолжается. Если в среду не успели — суббота тоже отличный день: кампус и галереи 401 Richmond рядом."
+  },
+  { date:"2026-05-09", time:"15:00", type:"street", venue:"bentway",
+    title:"The Bentway — арт-прогулка",
+    desc:"Парк под мостом Гардинер: уличное искусство, инсталляции, скамейки. Прогулка вдоль современных арт-объектов. Можно пройтись медленно, посидеть."
+  },
+  { date:"2026-05-09", time:"14:00", type:"photography", venue:"contact",
+    title:"CONTACT Photography Festival",
+    desc:"Главный фотофестиваль Канады идёт весь май. Десятки бесплатных фотовыставок по всему городу, в галереях и на улицах. Заходи в любую из ближайших — выбор большой."
+  },
+  { date:"2026-05-10", time:"13:00", type:"gallery", venue:"ocad",
+    title:"OCAD GradEx — последний день",
+    desc:"Сегодня закрытие — последняя возможность увидеть студенческие работы. До 17:00. На День матери — отличная необычная активность."
+  },
+  { date:"2026-05-19", time:"14:00", type:"photography", venue:"contact",
+    title:"CONTACT Photography — днём перед ROM",
+    desc:"Зайти в одну-две фотовыставки днём, потом вечером в ROM (бесплатно с 16:00). На сайте CONTACT можно выбрать выставки рядом — много в центре."
+  },
+  { date:"2026-05-20", time:"17:30", type:"voice", venue:"cityhall",
+    title:"⭐ SING! Free Preview — Nathan Phillips Square",
+    desc:"Бесплатный концерт хорового и a cappella пения на главной площади у мэрии. На улице, под открытым небом. После Gardiner+COC — третья остановка вечера. До 19:30."
+  },
+  { date:"2026-05-29", time:"10:00", type:"festival", venue:"cityhall",
+    title:"Toronto Newcomer Day — City Hall",
+    desc:"Городской день для новых жителей: выступления, музыка, еда народов мира, информационные стенды. До 15:00 на Nathan Phillips Square. Можно зайти на час, посмотреть, послушать."
   }
 ];
 
