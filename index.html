@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a1330">
+<title>Концерты — Май 2026</title>
+<style>
+  :root{
+    --bg:#0f0a1f;
+    --bg2:#1a1330;
+    --card:#1f1840;
+    --card-past:#181428;
+    --text:#f5f0ff;
+    --muted:#a89dc4;
+    --muted-past:#5a5478;
+    --accent:#ffb86b;
+    --accent2:#ff7eb6;
+    --line:#2a2350;
+    --ok:#7be3a4;
+    --today:#ffd966;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+    background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+    background-attachment:fixed;
+    color:var(--text);
+    line-height:1.45;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    min-height:100vh;
+  }
+  header{
+    padding:20px 18px 14px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:10;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background:rgba(15,10,31,.85);
+  }
+  h1{margin:0;font-size:22px;font-weight:700;letter-spacing:.2px}
+  .sub{margin:4px 0 0;font-size:13px;color:var(--muted)}
+  .from{font-size:12px;color:var(--accent);margin-top:6px;font-weight:500}
+  main{padding:14px 12px 40px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+  .day-divider{
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    text-align:center;
+    margin:10px 0 -4px;
+    font-weight:600;
+  }
+  .day-divider.today{color:var(--today)}
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 4px 18px rgba(0,0,0,.35);
+    border:1px solid var(--line);
+    transition:opacity .25s, transform .25s, box-shadow .25s;
+    scroll-margin-top:90px;
+  }
+  .card.past{
+    opacity:.42;
+    background:var(--card-past);
+    filter:grayscale(.6);
+  }
+  .card.next{
+    border-color:var(--accent);
+    box-shadow:0 6px 28px rgba(255,184,107,.25);
+  }
+  .card.open{
+    transform:none;
+  }
+
+  .hero{
+    position:relative;
+    height:160px;
+    display:flex;
+    align-items:flex-end;
+    padding:10px 14px;
+    color:#fff;
+    overflow:hidden;
+    background-size:cover;
+    background-position:center;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.65) 100%);
+  }
+  .hero .icon{
+    position:absolute;
+    right:14px; top:14px;
+    font-size:38px;
+    opacity:.9;
+    filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));
+  }
+  .hero .date{
+    position:relative;
+    font-size:13px;
+    background:rgba(0,0,0,.55);
+    padding:5px 10px;
+    border-radius:999px;
+    backdrop-filter:blur(6px);
+    font-weight:600;
+  }
+
+  .body{padding:14px 16px 4px}
+  .title{font-size:17px;font-weight:700;margin:0 0 6px;line-height:1.3}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:8px;
+    font-size:12.5px;color:var(--muted);
+    margin-bottom:10px;
+  }
+  .meta span{display:inline-flex;align-items:center;gap:4px}
+  .pill{
+    background:rgba(123,227,164,.14);
+    color:var(--ok);
+    padding:3px 9px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:11.5px;
+  }
+  .desc{
+    font-size:14px;
+    color:#e1d8ef;
+    margin:0;
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease, margin .25s, padding .25s;
+  }
+  .card.open .desc{max-height:600px;margin:0 0 12px;padding-top:2px}
+  .card.past .desc{color:var(--muted-past)}
+
+  .walk{
+    display:flex;
+    gap:10px;
+    padding:10px 12px;
+    background:rgba(255,255,255,.04);
+    border-radius:12px;
+    margin:0 0 12px;
+    font-size:13px;
+    align-items:center;
+  }
+  .walk .lead{font-size:18px}
+  .walk b{color:var(--accent)}
+  .card.past .walk b{color:var(--muted)}
+
+  .actions{
+    display:flex;gap:8px;
+    padding:0 0 14px;
+    align-items:stretch;
+  }
+  .btn{
+    flex:1;
+    text-align:center;
+    text-decoration:none;
+    padding:11px 12px;
+    border-radius:12px;
+    font-size:13.5px;
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .btn[data-toggle]{flex:0 0 48px;font-size:14px}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#1a0830;
+  }
+  .btn.ghost{
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--line);
+    color:var(--text);
+  }
+  .card.past .btn.primary{
+    background:rgba(255,255,255,.08);
+    color:var(--muted);
+  }
+
+  .toggle{
+    width:100%;
+    background:transparent;
+    border:none;
+    color:var(--muted);
+    font-size:12px;
+    padding:6px 0 12px;
+    cursor:pointer;
+    letter-spacing:.5px;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11.5px;
+    padding:20px 16px 30px;
+    line-height:1.6;
+  }
+  footer a{color:var(--accent);text-decoration:none}
+
+  @media (min-width: 600px){
+    main{padding:18px 20px 40px}
+    .hero{height:150px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎭 Концерты Мая 2026</h1>
+  <p class="sub">Бесплатно · Центр Торонто</p>
+  <p class="from">📍 От 260 Wellesley St E</p>
+</header>
+
+<main id="list"></main>
+
+<footer>
+  Все концерты бесплатные. На COC и Ричард Брэдшоу приходите за 30–45 мин — места по принципу «кто раньше пришёл».<br>
+  Лифты есть везде в Four Seasons Centre.
+</footer>
+
+<script>
+const ORIGIN_NAME = "260 Wellesley St E, Toronto";
+const TODAY = new Date("2026-05-02T12:00:00-04:00");
+
+// Walking estimates from 260 Wellesley St E (precomputed, grid-adjusted)
+const VENUES = {
+  mazzoleni: {
+    name: "Mazzoleni Hall, Royal Conservatory",
+    addr: "273 Bloor St W",
+    km: 2.5, min: 30,
+    mapDest: "Mazzoleni+Hall+273+Bloor+St+W+Toronto",
+    site: "https://www.rcmusic.com/ggs/master-classes-and-performances/student-recitals-and-community-performances"
+  },
+  coc: {
+    name: "Richard Bradshaw Amphitheatre, Four Seasons Centre",
+    addr: "145 Queen St W",
+    km: 3.0, min: 38,
+    mapDest: "Four+Seasons+Centre+145+Queen+St+W+Toronto",
+    site: "https://www.coc.ca/community/free-concert-series"
+  },
+  cocShow: {
+    name: "Richard Bradshaw Amphitheatre, Four Seasons Centre",
+    addr: "145 Queen St W",
+    km: 3.0, min: 38,
+    mapDest: "Four+Seasons+Centre+145+Queen+St+W+Toronto",
+    site: "https://www.coc.ca/community/showcase-series"
+  },
+  tapestry: {
+    name: "Nancy & Ed Jackman Performance Centre",
+    addr: "877 Yonge St",
+    km: 1.9, min: 24,
+    mapDest: "877+Yonge+St+Toronto",
+    site: "https://tapestryopera.com/free-underground-concerts/"
+  },
+  koffler: {
+    name: "Koffler Arts, Youngplace",
+    addr: "180 Shaw St #104",
+    km: 5.2, min: 62,
+    mapDest: "Koffler+Arts+180+Shaw+St+Toronto",
+    site: "https://www.kulturacollective.com/event/world-play-reading-torontos-many-languages/"
+  },
+  union: {
+    name: "Union Station West Wing",
+    addr: "65 Front St W",
+    km: 3.2, min: 40,
+    mapDest: "Union+Station+65+Front+St+W+Toronto",
+    site: "https://torontounion.ca/event/td-music-celebrates-asian-heritage-month-3/"
+  },
+  legion: {
+    name: "Royal Canadian Legion Branch 344",
+    addr: "1395 Lake Shore Blvd W",
+    km: 6.8, min: 82,
+    mapDest: "1395+Lake+Shore+Blvd+W+Toronto",
+    site: "https://www.eventbrite.ca/o/royal-canadian-legion-branch-344-90097678653"
+  },
+  nbs: {
+    name: "Canada's National Ballet School",
+    addr: "400 Jarvis St",
+    km: 1.0, min: 13,
+    mapDest: "Canadas+National+Ballet+School+400+Jarvis+St+Toronto",
+    site: "https://www.nbs-enb.ca/new-now/nbs-block-party/"
+  },
+  doors: {
+    name: "Doors Open Toronto — много мест",
+    addr: "по всему городу",
+    km: null, min: null,
+    mapDest: "Doors+Open+Toronto",
+    site: "https://www.doorsopenontario.on.ca/pages/events/toronto"
+  }
+};
+
+const TYPE_META = {
+  opera:    { icon:"🎭", label:"Опера" },
+  classical:{ icon:"🎻", label:"Классика" },
+  piano:    { icon:"🎹", label:"Фортепиано" },
+  voice:    { icon:"🎤", label:"Вокал" },
+  jazz:     { icon:"🎷", label:"Джаз" },
+  dance:    { icon:"💃", label:"Танец" },
+  theatre:  { icon:"📖", label:"Театр / чтения" },
+  cultural: { icon:"🌏", label:"Культура" },
+  festival: { icon:"🏛️", label:"Фестиваль" }
+};
+
+const EVENTS = [
+  {
+    date:"2026-05-03", time:"17:30", type:"classical",
+    title:"Шарлотта Чонг — арфа",
+    venue:"mazzoleni",
+    desc:"Сольный концерт молодой арфистки в красивом зале консерватории. Музыка нежная и расслабляющая — отличный воскресный вечер. Свободные места, приходи минут за 20."
+  },
+  {
+    date:"2026-05-03", time:"20:00", type:"classical",
+    title:"GGS Brass Quintet",
+    venue:"mazzoleni",
+    desc:"Молодой медный квинтет: трубы, тромбоны, валторна. Звучит торжественно и ярко, программа короткая (~1 час). Зал тёплый и уютный."
+  },
+  {
+    date:"2026-05-04", time:"12:00", type:"opera",
+    title:"COC: Spotlight on Opera 5",
+    venue:"coc",
+    desc:"Бесплатный обеденный концерт в Канадской Опере. Молодые певцы исполняют арии и ансамбли. Двери открываются за 30 минут — лучше прийти за 35–45 мин, чтобы сесть."
+  },
+  {
+    date:"2026-05-04", time:"18:00", type:"piano",
+    title:"Tapestry: Максим Альберти, фортепиано",
+    venue:"tapestry",
+    desc:"Бесплатный фортепианный вечер. Камерная атмосфера, маленький зал. Нужна бесплатная регистрация на сайте Tapestry Opera заранее."
+  },
+  {
+    date:"2026-05-04", time:"19:00", type:"theatre",
+    title:"World Play: Свобода — чтения",
+    venue:"koffler",
+    desc:"Чтения и обсуждения на разных языках Торонто. Тема — свобода. Бесплатно, но это далеко от дома (около часа пешком), лучше на трамвае."
+  },
+  {
+    date:"2026-05-05", time:"12:00", type:"classical",
+    title:"COC: Toronto Summer Music Preview",
+    venue:"coc",
+    desc:"Превью летнего фестиваля камерной музыки. Скрипка, виолончель, фортепиано. Программа короткая, всё под акустическим деревянным куполом амфитеатра."
+  },
+  {
+    date:"2026-05-05", time:"16:00", type:"cultural",
+    title:"TD Music: Asian Heritage Month",
+    venue:"union",
+    desc:"Живая музыка прямо в Union Station: Peach Luffe и Mastane. Уютный пешеходный маршрут вдоль Yonge или на метро. Можно прийти на любое время в 16:00–18:00."
+  },
+  {
+    date:"2026-05-06", time:"20:00", type:"classical",
+    title:"Кебин Ли — флейта",
+    venue:"mazzoleni",
+    desc:"Сольный флейтовый вечер. Лёгкая и светлая музыка — хорошо подходит для среды после прогулки. Зал маленький, акустика отличная."
+  },
+  {
+    date:"2026-05-07", time:"12:00", type:"dance",
+    title:"COC: Sculptures in Motion — Odissi",
+    venue:"cocShow",
+    desc:"Индийский классический танец Одисси — необычно и красиво, плавные движения как живые скульптуры. Места ограничены (120), рекомендуется регистрация и приход заранее."
+  },
+  {
+    date:"2026-05-08", time:"17:30", type:"voice",
+    title:"Даниэла Каррэон Эррера — сопрано",
+    venue:"mazzoleni",
+    desc:"Молодая сопрано исполняет оперные арии и романсы. Отличный способ начать пятничный вечер музыкой."
+  },
+  {
+    date:"2026-05-08", time:"20:00", type:"voice",
+    title:"Шарлотта Андерсон — сопрано",
+    venue:"mazzoleni",
+    desc:"Ещё один сольный вокальный концерт в тот же вечер. Можно остаться на оба — между ними перерыв."
+  },
+  {
+    date:"2026-05-09", time:"17:30", type:"voice",
+    title:"Джада Алексиу — меццо-сопрано",
+    venue:"mazzoleni",
+    desc:"Тёплый, низкий женский голос. Программа обычно включает арии Россини, Бизе и романтических авторов."
+  },
+  {
+    date:"2026-05-10", time:"12:00", type:"classical",
+    title:"Жаклин Гровс — кларнет",
+    venue:"mazzoleni",
+    desc:"День матери! Утренний кларнетный концерт. Мягкое, бархатное звучание — отличное настроение для воскресенья."
+  },
+  {
+    date:"2026-05-10", time:"14:30", type:"voice",
+    title:"⭐ День Матери: Каллум Олдворт — баритон",
+    venue:"mazzoleni",
+    desc:"Лучший выбор на День матери: бесплатный, классический баритон, ранний час — вернёшься ещё засветло. Романсы и оперные арии."
+  },
+  {
+    date:"2026-05-11", time:"12:00", type:"opera",
+    title:"COC: Жизнь, Любовь и Дружба",
+    venue:"coc",
+    desc:"Тематический вокальный концерт об отношениях. Любимые арии и дуэты. Уже стандартная программа COC по понедельникам — всегда хорошо."
+  },
+  {
+    date:"2026-05-12", time:"12:00", type:"opera",
+    title:"COC: Les Adieux — Прощания",
+    venue:"coc",
+    desc:"Прощальный концерт сезона: лирические, эмоциональные арии. Молодые певцы выкладываются в полную силу. Приходи за 35 мин."
+  },
+  {
+    date:"2026-05-13", time:"12:00", type:"opera",
+    title:"COC: Toronto Opera Festival Preview",
+    venue:"coc",
+    desc:"Анонс летнего оперного фестиваля от труппы Opera 5. Короткие сцены из разных опер — разнообразно и весело."
+  },
+  {
+    date:"2026-05-14", time:"12:00", type:"opera",
+    title:"COC: Cherished Arias to Chinese Art Song",
+    venue:"cocShow",
+    desc:"Оперные арии и китайские художественные песни. Необычное и красивое сочетание двух традиций. Места ограничены."
+  },
+  {
+    date:"2026-05-14", time:"19:30", type:"jazz",
+    title:"Jazz Rangers: Miles & Coltrane at 100",
+    venue:"legion",
+    desc:"Джазовый вечер в честь столетия Майлса Дэвиса и Колтрейна. Бесплатно, но далеко — лучше на метро или трамвае. Уютный камерный зал Легиона."
+  },
+  {
+    date:"2026-05-15", time:"17:30", type:"voice",
+    title:"Алисса Бартоломью — сопрано",
+    venue:"mazzoleni",
+    desc:"Пятничный вечер с голосом сопрано. Программа обычно из Моцарта, Пуччини и неаполитанских песен."
+  },
+  {
+    date:"2026-05-16", time:"18:00", type:"voice",
+    title:"Тайлер Принс — баритон",
+    venue:"mazzoleni",
+    desc:"Молодой канадский баритон. Глубокий, мужественный голос — программа из опер и художественных песен."
+  },
+  {
+    date:"2026-05-17", time:"20:00", type:"classical",
+    title:"Алисия Пуччи — альт",
+    venue:"mazzoleni",
+    desc:"Сольный альтовый концерт — редкость! Тёплый, певучий инструмент. Брамс, Барток, может Шуман."
+  },
+  {
+    date:"2026-05-20", time:"17:30", type:"opera",
+    title:"COC: Empire of Wild — отрывки",
+    venue:"coc",
+    desc:"Вечерний концерт (не обеденный!): отрывки из канадской оперы Empire of Wild с оркестром. Современная музыка, но мелодичная и захватывающая."
+  },
+  {
+    date:"2026-05-22", time:"12:00", type:"cultural",
+    title:"COC: Moments of Inner Echoes",
+    venue:"cocShow",
+    desc:"Обеденный концерт — медитативная программа из мировых музыкальных традиций. Спокойно и красиво."
+  },
+  {
+    date:"2026-05-23", time:"10:00", type:"festival",
+    title:"Doors Open Toronto",
+    venue:"doors",
+    desc:"Город открывает бесплатно сотни зданий: театры, церкви, особняки. Можно гулять весь день, выбирай ближайшие к дому. Расписание на doorsopenontario.on.ca."
+  },
+  {
+    date:"2026-05-24", time:"10:00", type:"festival",
+    title:"Doors Open Toronto — день 2",
+    venue:"doors",
+    desc:"Второй день открытых дверей. Ходи по интересным зданиям, многие в центре в пешей доступности."
+  },
+  {
+    date:"2026-05-24", time:"12:00", type:"voice",
+    title:"Аланна Бопарлан — сопрано",
+    venue:"mazzoleni",
+    desc:"Сольный вокальный концерт сопрано. Свежий молодой голос."
+  },
+  {
+    date:"2026-05-26", time:"14:30", type:"piano",
+    title:"Билл Ву — фортепиано",
+    venue:"mazzoleni",
+    desc:"Дневной фортепианный концерт. Классическая программа, удобное время — после обеда и до часа пик."
+  },
+  {
+    date:"2026-05-28", time:"20:00", type:"voice",
+    title:"Тереза Туччи — сопрано",
+    venue:"mazzoleni",
+    desc:"Вечерний сольный концерт сопрано. Имя итальянское — возможно, итальянская оперная программа."
+  },
+  {
+    date:"2026-05-29", time:"12:00", type:"cultural",
+    title:"COC: Walking into the Middle East",
+    venue:"cocShow",
+    desc:"Музыка Ближнего Востока: уд, канун, голос. Очень атмосферно и необычно для классического зала. Места ограничены, регистрация рекомендуется."
+  },
+  {
+    date:"2026-05-29", time:"16:00", type:"voice",
+    title:"Мэттью Блэк — баритон",
+    venue:"mazzoleni",
+    desc:"Послеобеденный концерт баритона. Хорошо ложится между обедом и ужином."
+  },
+  {
+    date:"2026-05-30", time:"11:00", type:"dance",
+    title:"NBS Block Party — балет",
+    venue:"nbs",
+    desc:"Открытый день Национальной балетной школы! Выступления, мастер-классы, можно зайти в студии. Близко от дома (15 мин пешком). Бесплатная регистрация."
+  },
+  {
+    date:"2026-05-30", time:"17:30", type:"voice",
+    title:"Адриана Да — сопрано",
+    venue:"mazzoleni",
+    desc:"Субботний вокальный вечер. Молодая сопрано из Glenn Gould School."
+  },
+  {
+    date:"2026-05-31", time:"19:00", type:"piano",
+    title:"Джонатан Мак — фортепиано",
+    venue:"mazzoleni",
+    desc:"Завершение мая: вечерний фортепианный концерт. Джонатан Мак — известный канадский молодой пианист, программа обычно серьёзная и виртуозная."
+  }
+];
+
+// --- helpers ---
+function eventDateTime(e){
+  return new Date(e.date + "T" + e.time + ":00-04:00");
+}
+function isPast(e){
+  const dt = eventDateTime(e);
+  const end = new Date(dt.getTime() + 90*60*1000); // event "active" 90 min
+  return end < TODAY;
+}
+function dayLabel(dateStr){
+  const d = new Date(dateStr + "T12:00:00-04:00");
+  const days = ["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
+  const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  return days[d.getDay()] + ", " + d.getDate() + " " + months[d.getMonth()];
+}
+function isToday(dateStr){
+  const d = new Date(dateStr + "T12:00:00-04:00");
+  return d.toDateString() === TODAY.toDateString();
+}
+function fmtKm(km){
+  if(km == null) return "—";
+  return km < 1 ? Math.round(km*1000) + " м" : km.toFixed(1) + " км";
+}
+function fmtMin(min){
+  if(min == null) return "—";
+  if(min < 60) return min + " мин";
+  const h = Math.floor(min/60), m = min%60;
+  return h + " ч " + (m ? m + " мин" : "");
+}
+function mapsLink(venue){
+  const o = encodeURIComponent(ORIGIN_NAME);
+  const d = venue.mapDest || encodeURIComponent(venue.addr + " Toronto");
+  return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${d}&travelmode=walking`;
+}
+
+// --- render ---
+const list = document.getElementById("list");
+let firstUpcomingId = null;
+let lastDay = null;
+
+EVENTS.sort((a,b)=>eventDateTime(a)-eventDateTime(b)).forEach((e,i)=>{
+  const past = isPast(e);
+  const venue = VENUES[e.venue];
+  const t = TYPE_META[e.type];
+  const id = "ev-" + i;
+
+  if(!past && firstUpcomingId === null) firstUpcomingId = id;
+
+  // day divider
+  if(e.date !== lastDay){
+    const div = document.createElement("div");
+    div.className = "day-divider" + (isToday(e.date) ? " today" : "");
+    div.textContent = dayLabel(e.date) + (isToday(e.date) ? " · сегодня" : "");
+    list.appendChild(div);
+    lastDay = e.date;
+  }
+
+  const card = document.createElement("article");
+  card.className = "card" + (past ? " past" : "");
+  card.id = id;
+
+  const isNext = !past && firstUpcomingId === id;
+  if(isNext) card.classList.add("next","open");
+
+  const walkHTML = venue.km != null
+    ? `<div class="walk">
+         <span class="lead">🚶</span>
+         <div>пешком <b>${fmtMin(venue.min)}</b> · <b>${fmtKm(venue.km)}</b><br>
+              <small style="color:var(--muted)">${venue.name}, ${venue.addr}</small></div>
+       </div>`
+    : `<div class="walk">
+         <span class="lead">🗺️</span>
+         <div>${venue.name}<br><small style="color:var(--muted)">${venue.addr}</small></div>
+       </div>`;
+
+  card.innerHTML = `
+    <div class="hero" style="background-image:url('images/${e.type}.jpg')">
+      <span class="icon">${t.icon}</span>
+      <span class="date">${e.time}</span>
+    </div>
+    <div class="body">
+      <h2 class="title">${e.title}</h2>
+      <div class="meta">
+        <span>🎼 ${t.label}</span>
+        <span class="pill">Бесплатно</span>
+      </div>
+      <p class="desc">${e.desc}</p>
+      ${walkHTML}
+      <div class="actions">
+        <a class="btn primary" href="${mapsLink(venue)}" target="_blank" rel="noopener">🚶 Маршрут</a>
+        <a class="btn ghost" href="${venue.site}" target="_blank" rel="noopener">ℹ️ Сайт</a>
+        <button class="btn ghost" data-toggle aria-label="Развернуть">${isNext ? "▲" : "▼"}</button>
+      </div>
+    </div>
+  `;
+
+  card.querySelector("[data-toggle]").addEventListener("click",()=>{
+    card.classList.toggle("open");
+    const btn = card.querySelector("[data-toggle]");
+    btn.textContent = card.classList.contains("open") ? "▲" : "▼";
+  });
+
+  list.appendChild(card);
+});
+
+// scroll to first upcoming
+if(firstUpcomingId){
+  requestAnimationFrame(()=>{
+    document.getElementById(firstUpcomingId).scrollIntoView({behavior:"instant", block:"start"});
+  });
+}
+</script>
+</body>
+</html>
