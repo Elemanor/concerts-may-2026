@@ -47,7 +47,6 @@
   ::selection{background:var(--gold);color:#fff}
 
   header{
-    padding:18px 18px 16px;
     text-align:center;
     border-bottom:1px solid var(--line);
     position:sticky; top:0; z-index:10;
@@ -55,7 +54,11 @@
     -webkit-backdrop-filter: blur(10px) saturate(140%);
     background:rgba(245,239,225,.92);
     box-shadow:0 1px 0 rgba(160,118,61,.08);
-    transition:padding .3s ease, background .3s ease;
+    transition:background .3s ease;
+  }
+  .header-inner{
+    padding:18px 18px 14px;
+    transition:padding .3s ease;
   }
   .logo{
     display:block;
@@ -106,8 +109,10 @@
 
   /* Compact header when scrolled */
   header.scrolled{
-    padding:8px 14px;
     background:rgba(245,239,225,.96);
+  }
+  header.scrolled .header-inner{
+    padding:6px 14px 4px;
   }
   header.scrolled .logo{
     width:36px; height:36px;
@@ -124,28 +129,10 @@
     pointer-events:none;
   }
 
-  main{padding:18px 14px 40px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-
-  .day-divider{
-    display:flex;align-items:center;gap:14px;
-    color:var(--gold-deep);
-    font-family:'Cormorant Garamond',serif;
-    font-size:15px;
-    font-style:italic;
-    letter-spacing:1.5px;
-    text-align:center;
-    margin:14px 4px 0;
-    font-weight:500;
-    text-transform:lowercase;
-  }
-  .day-divider::before, .day-divider::after{
-    content:"";flex:1;height:1px;
-    background:linear-gradient(90deg,transparent,var(--line),transparent);
-  }
-  .day-divider.today{color:var(--burgundy);font-weight:600}
-  .day-divider.today::before, .day-divider.today::after{
-    background:linear-gradient(90deg,transparent,var(--burgundy-soft),transparent);
-  }
+  main{padding:8px 14px 40px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:0}
+  .day.past .day-name{color:var(--muted-past)}
+  .day.past .day-stats{opacity:.6}
+  .day.past .day-name::before, .day.past .day-name::after{background:var(--muted-past);opacity:.4}
 
   .card{
     background:var(--card);
@@ -335,6 +322,121 @@
   }
   .card.past .btn.ghost{color:var(--muted-past)}
 
+  /* Filter chips inside the sticky header */
+  .filters{
+    border-top:1px solid var(--line-soft);
+    padding:8px 0 8px;
+    background:transparent;
+  }
+  .filters-inner{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding:2px 12px;
+    max-width:600px;
+    margin:0 auto;
+    scrollbar-width:none;
+  }
+  .filters-inner::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--gold-deep);
+    padding:6px 14px;
+    border-radius:999px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:14px;
+    letter-spacing:.4px;
+    cursor:pointer;
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    transition:all .2s;
+  }
+  .chip .count{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:500;
+  }
+  .chip.active{
+    background:var(--burgundy);
+    color:#fff7e3;
+    border-color:var(--burgundy);
+  }
+  .chip.active .count{color:rgba(255,247,227,.7)}
+
+  /* Day section */
+  .day{
+    margin:0 0 6px;
+    scroll-margin-top:110px;
+  }
+  .day-head{
+    text-align:center;
+    padding:18px 12px 14px;
+  }
+  .day-name{
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px;
+    font-style:italic;
+    color:var(--burgundy);
+    margin:0;
+    letter-spacing:.3px;
+    font-weight:500;
+  }
+  .day-name::before, .day-name::after{
+    content:"";display:inline-block;width:24px;height:1px;
+    background:var(--gold);
+    vertical-align:middle;
+    margin:0 12px;
+  }
+  .day.today .day-name{color:var(--burgundy);font-weight:600}
+  .day.today .day-name::after{
+    content:" · сегодня";display:inline;background:none;font-size:14px;
+    color:var(--gold-deep);margin:0 0 0 8px;
+  }
+  .day-stats{
+    font-family:'Lora',serif;
+    font-size:12.5px;
+    color:var(--muted);
+    margin:6px 0 0;
+    font-style:italic;
+  }
+  .day-stats .dot{margin:0 6px;color:var(--gold)}
+  .day-route{
+    display:inline-flex;align-items:center;gap:6px;
+    margin:10px 0 0;
+    padding:7px 16px;
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--gold-deep);
+    border-radius:2px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .day-route:hover{background:var(--gold);color:#fff7e3}
+  .day-route::before{content:"❦";font-size:11px}
+
+  .day-cards{
+    display:flex;flex-direction:column;gap:14px;
+    padding:0;
+  }
+
+  body.f-concert .card:not([data-cat="concert"]),
+  body.f-art     .card:not([data-cat="art"]),
+  body.f-dance   .card:not([data-cat="dance"]),
+  body.f-theatre .card:not([data-cat="theatre"]){display:none}
+  body.f-concert .day:not([data-cats~="concert"]),
+  body.f-art     .day:not([data-cats~="art"]),
+  body.f-dance   .day:not([data-cats~="dance"]),
+  body.f-theatre .day:not([data-cats~="theatre"]){display:none}
+
   footer{
     text-align:center;
     color:var(--muted);
@@ -365,10 +467,15 @@
 <body>
 
 <header>
-  <img class="logo" src="icon.png" alt="">
-  <h1>Концерты<span class="ornament">·</span>Май 2026</h1>
-  <p class="sub">бесплатные программы в центре Торонто</p>
-  <p class="from">от 260 Wellesley St E</p>
+  <div class="header-inner">
+    <img class="logo" src="icon.png" alt="">
+    <h1>Май<span class="ornament">·</span>2026</h1>
+    <p class="sub">бесплатные концерты, музеи и галереи · центр Торонто</p>
+    <p class="from">от 260 Wellesley St E</p>
+  </div>
+  <nav class="filters">
+    <div class="filters-inner" id="filters"></div>
+  </nav>
 </header>
 
 <main id="list"></main>
@@ -385,82 +492,84 @@ const TODAY = new Date("2026-05-02T12:00:00-04:00");
 
 // Walking estimates from 260 Wellesley St E (precomputed, grid-adjusted)
 const VENUES = {
-  mazzoleni: {
-    name: "Mazzoleni Hall, Royal Conservatory",
-    addr: "273 Bloor St W",
-    km: 2.5, min: 30,
-    mapDest: "Mazzoleni+Hall+273+Bloor+St+W+Toronto",
-    site: "https://www.rcmusic.com/ggs/master-classes-and-performances/student-recitals-and-community-performances"
-  },
-  coc: {
-    name: "Richard Bradshaw Amphitheatre, Four Seasons Centre",
-    addr: "145 Queen St W",
-    km: 3.0, min: 38,
-    mapDest: "Four+Seasons+Centre+145+Queen+St+W+Toronto",
-    site: "https://www.coc.ca/community/free-concert-series"
-  },
-  cocShow: {
-    name: "Richard Bradshaw Amphitheatre, Four Seasons Centre",
-    addr: "145 Queen St W",
-    km: 3.0, min: 38,
-    mapDest: "Four+Seasons+Centre+145+Queen+St+W+Toronto",
-    site: "https://www.coc.ca/community/showcase-series"
-  },
-  tapestry: {
-    name: "Nancy & Ed Jackman Performance Centre",
-    addr: "877 Yonge St",
-    km: 1.9, min: 24,
-    mapDest: "877+Yonge+St+Toronto",
-    site: "https://tapestryopera.com/free-underground-concerts/"
-  },
-  koffler: {
-    name: "Koffler Arts, Youngplace",
-    addr: "180 Shaw St #104",
-    km: 5.2, min: 62,
-    mapDest: "Koffler+Arts+180+Shaw+St+Toronto",
-    site: "https://www.kulturacollective.com/event/world-play-reading-torontos-many-languages/"
-  },
-  union: {
-    name: "Union Station West Wing",
-    addr: "65 Front St W",
-    km: 3.2, min: 40,
-    mapDest: "Union+Station+65+Front+St+W+Toronto",
-    site: "https://torontounion.ca/event/td-music-celebrates-asian-heritage-month-3/"
-  },
-  legion: {
-    name: "Royal Canadian Legion Branch 344",
-    addr: "1395 Lake Shore Blvd W",
-    km: 6.8, min: 82,
-    mapDest: "1395+Lake+Shore+Blvd+W+Toronto",
-    site: "https://www.eventbrite.ca/o/royal-canadian-legion-branch-344-90097678653"
-  },
-  nbs: {
-    name: "Canada's National Ballet School",
-    addr: "400 Jarvis St",
-    km: 1.0, min: 13,
-    mapDest: "Canadas+National+Ballet+School+400+Jarvis+St+Toronto",
-    site: "https://www.nbs-enb.ca/new-now/nbs-block-party/"
-  },
-  doors: {
-    name: "Doors Open Toronto — много мест",
-    addr: "по всему городу",
-    km: null, min: null,
-    mapDest: "Doors+Open+Toronto",
-    site: "https://www.doorsopenontario.on.ca/pages/events/toronto"
-  }
+  mazzoleni: { name:"Mazzoleni Hall, Royal Conservatory", addr:"273 Bloor St W",
+    km:2.5, min:30, mapDest:"Mazzoleni+Hall+273+Bloor+St+W+Toronto",
+    site:"https://www.rcmusic.com/ggs/master-classes-and-performances/student-recitals-and-community-performances" },
+  coc: { name:"Four Seasons Centre — Richard Bradshaw Amphitheatre", addr:"145 Queen St W",
+    km:3.0, min:38, mapDest:"Four+Seasons+Centre+145+Queen+St+W+Toronto",
+    site:"https://www.coc.ca/community/free-concert-series" },
+  cocShow: { name:"Four Seasons Centre — Richard Bradshaw Amphitheatre", addr:"145 Queen St W",
+    km:3.0, min:38, mapDest:"Four+Seasons+Centre+145+Queen+St+W+Toronto",
+    site:"https://www.coc.ca/community/showcase-series" },
+  tapestry: { name:"Nancy & Ed Jackman Performance Centre", addr:"877 Yonge St",
+    km:1.9, min:24, mapDest:"877+Yonge+St+Toronto",
+    site:"https://tapestryopera.com/free-underground-concerts/" },
+  koffler: { name:"Koffler Arts, Youngplace", addr:"180 Shaw St #104",
+    km:5.2, min:62, mapDest:"Koffler+Arts+180+Shaw+St+Toronto",
+    site:"https://www.kofflerarts.org/" },
+  union: { name:"Union Station West Wing", addr:"65 Front St W",
+    km:3.2, min:40, mapDest:"Union+Station+65+Front+St+W+Toronto",
+    site:"https://torontounion.ca/event/td-music-celebrates-asian-heritage-month-3/" },
+  legion: { name:"Royal Canadian Legion Branch 344", addr:"1395 Lake Shore Blvd W",
+    km:6.8, min:82, mapDest:"1395+Lake+Shore+Blvd+W+Toronto",
+    site:"https://www.eventbrite.ca/o/royal-canadian-legion-branch-344-90097678653" },
+  nbs: { name:"Canada's National Ballet School", addr:"400 Jarvis St",
+    km:1.0, min:13, mapDest:"Canadas+National+Ballet+School+400+Jarvis+St+Toronto",
+    site:"https://www.nbs-enb.ca/new-now/nbs-block-party/" },
+  doors: { name:"Doors Open Toronto — много мест", addr:"по всему городу",
+    km:null, min:null, mapDest:"Doors+Open+Toronto",
+    site:"https://www.doorsopenontario.on.ca/pages/events/toronto" },
+  // museums & galleries
+  bata: { name:"Bata Shoe Museum", addr:"327 Bloor St W",
+    km:2.5, min:30, mapDest:"Bata+Shoe+Museum+327+Bloor+St+W+Toronto",
+    site:"https://batashoemuseum.ca/" },
+  gardiner: { name:"Gardiner Museum", addr:"111 Queen's Park",
+    km:2.0, min:24, mapDest:"Gardiner+Museum+111+Queens+Park+Toronto",
+    site:"https://www.gardinermuseum.on.ca/" },
+  ago: { name:"Art Gallery of Ontario (AGO)", addr:"317 Dundas St W",
+    km:2.7, min:33, mapDest:"AGO+317+Dundas+St+W+Toronto",
+    site:"https://ago.ca/" },
+  rom: { name:"Royal Ontario Museum (ROM)", addr:"100 Queen's Park",
+    km:2.0, min:24, mapDest:"Royal+Ontario+Museum+100+Queens+Park+Toronto",
+    site:"https://www.rom.on.ca/" },
+  artmuseum: { name:"Art Museum at University of Toronto", addr:"15 King's College Circle",
+    km:2.3, min:28, mapDest:"Art+Museum+University+of+Toronto",
+    site:"https://artmuseum.utoronto.ca/" },
+  market: { name:"Market Gallery, St. Lawrence Market", addr:"95 Front St E",
+    km:2.0, min:25, mapDest:"Market+Gallery+St+Lawrence+Market+95+Front+St+E+Toronto",
+    site:"https://www.toronto.ca/explore-enjoy/history-art-culture/museums/market-gallery/" },
+  powerplant: { name:"The Power Plant Contemporary Art Gallery", addr:"231 Queens Quay W",
+    km:3.5, min:44, mapDest:"The+Power+Plant+231+Queens+Quay+W+Toronto",
+    site:"https://thepowerplant.org/" },
+  r401: { name:"401 Richmond — арт-хаб", addr:"401 Richmond St W",
+    km:3.0, min:38, mapDest:"401+Richmond+St+W+Toronto",
+    site:"https://www.401richmond.com/" }
 };
 
 const TYPE_META = {
-  opera:    { icon:"🎭", label:"Опера" },
-  classical:{ icon:"🎻", label:"Классика" },
-  piano:    { icon:"🎹", label:"Фортепиано" },
-  voice:    { icon:"🎤", label:"Вокал" },
-  jazz:     { icon:"🎷", label:"Джаз" },
-  dance:    { icon:"💃", label:"Танец" },
-  theatre:  { icon:"📖", label:"Театр / чтения" },
-  cultural: { icon:"🌏", label:"Культура" },
-  festival: { icon:"🏛️", label:"Фестиваль" }
+  opera:    { icon:"🎭", label:"Опера",         cat:"concert" },
+  classical:{ icon:"🎻", label:"Классика",      cat:"concert" },
+  piano:    { icon:"🎹", label:"Фортепиано",    cat:"concert" },
+  voice:    { icon:"🎤", label:"Вокал",         cat:"concert" },
+  jazz:     { icon:"🎷", label:"Джаз",          cat:"concert" },
+  dance:    { icon:"💃", label:"Танец",         cat:"dance"   },
+  theatre:  { icon:"📖", label:"Театр / чтения",cat:"theatre" },
+  cultural: { icon:"🌏", label:"Культура",      cat:"concert" },
+  festival: { icon:"🏛️", label:"Фестиваль",    cat:"art"     },
+  museum:   { icon:"🏛️", label:"Музей",        cat:"art"     },
+  gallery:  { icon:"🎨", label:"Галерея",       cat:"art"     },
+  ceramics: { icon:"🏺", label:"Керамика",      cat:"art"     },
+  fashion:  { icon:"👠", label:"Мода",          cat:"art"     },
+  heritage: { icon:"🏛️", label:"История города",cat:"art"     }
 };
+
+const CATEGORIES = [
+  { id:"all",     label:"Все"        },
+  { id:"concert", label:"🎼 Концерты" },
+  { id:"art",     label:"🎨 Искусство"},
+  { id:"dance",   label:"💃 Танец"    },
+  { id:"theatre", label:"📖 Театр"    }
+];
 
 const EVENTS = [
   {
@@ -666,23 +775,101 @@ const EVENTS = [
     title:"Джонатан Мак — фортепиано",
     venue:"mazzoleni",
     desc:"Завершение мая: вечерний фортепианный концерт. Джонатан Мак — известный канадский молодой пианист, программа обычно серьёзная и виртуозная."
+  },
+
+  // ───── Музеи и галереи ─────
+  { date:"2026-05-03", time:"12:00", type:"fashion", venue:"bata",
+    title:"Bata Shoe Museum — бесплатно по воскресеньям",
+    desc:"Знаменитый Музей обуви: 4500 лет истории через обувь — от Древнего Египта до современных подиумов. По воскресеньям вход для всех бесплатный, открыто 12:00–17:00. Хорошо зайти перед вечерним концертом в RCM — оба места рядом."
+  },
+  { date:"2026-05-06", time:"12:00", type:"gallery", venue:"artmuseum",
+    title:"Art Museum at UofT",
+    desc:"Современное искусство в кампусе университета Торонто. Всегда бесплатно. По средам открыто до 20:00, можно гулять не спеша."
+  },
+  { date:"2026-05-06", time:"16:00", type:"ceramics", venue:"gardiner",
+    title:"Gardiner Museum — бесплатные среды",
+    desc:"Один из лучших музеев керамики в мире. По средам после 16:00 — вход бесплатный, без регистрации. Очень тихо и красиво — фарфор, майолика, индейская керамика."
+  },
+  { date:"2026-05-06", time:"18:00", type:"gallery", venue:"ago",
+    title:"AGO — Free Wednesday Night",
+    desc:"Главная художественная галерея Торонто. Бесплатно вечером в первую среду месяца, 18:00–21:00. Билеты обязательно бронировать заранее на сайте AGO!"
+  },
+  { date:"2026-05-07", time:"12:30", type:"gallery", venue:"koffler",
+    title:"Koffler Arts — галерея",
+    desc:"Маленькая современная галерея на Shaw St. Бесплатно, в четверг открыто до 20:00. Можно совместить с дневным выступлением Odissi в COC."
+  },
+  { date:"2026-05-10", time:"15:30", type:"fashion", venue:"bata",
+    title:"Bata Shoe Museum — после концерта",
+    desc:"После концерта на День матери — спокойная прогулка в Музей обуси. Бесплатно по воскресеньям, открыто до 17:00."
+  },
+  { date:"2026-05-12", time:"13:00", type:"heritage", venue:"market",
+    title:"Market Gallery — после COC",
+    desc:"История Торонто на верхнем этаже St. Lawrence Market. Бесплатно, открыто до 17:00. После обеденного концерта в COC — приятная прогулка через старый Торонто."
+  },
+  { date:"2026-05-13", time:"13:00", type:"gallery", venue:"artmuseum",
+    title:"Art Museum at UofT",
+    desc:"Бесплатная галерея современного искусства. Альтернатива на спокойный день — после обеда зайти посмотреть выставки."
+  },
+  { date:"2026-05-13", time:"16:00", type:"ceramics", venue:"gardiner",
+    title:"Gardiner Museum — после COC",
+    desc:"После обеденной оперы в COC — прогуляться к керамическому музею. Бесплатно по средам после 16:00, без регистрации."
+  },
+  { date:"2026-05-17", time:"12:00", type:"fashion", venue:"bata",
+    title:"Bata Shoe Museum",
+    desc:"Воскресенье — всегда бесплатно. Перед вечерним альтовым концертом отличная остановка для прогулки."
+  },
+  { date:"2026-05-19", time:"16:00", type:"museum", venue:"rom",
+    title:"⭐ ROM — Free Night (третий вторник)",
+    desc:"Главный музей Торонто, бесплатно с 16:00 до 20:30 — это лучший музейный вечер месяца. Динозавры, мумии, минералы. Билеты надо забронировать заранее онлайн с указанием времени."
+  },
+  { date:"2026-05-20", time:"16:00", type:"ceramics", venue:"gardiner",
+    title:"Gardiner Museum — перед COC",
+    desc:"Идеальная пара: керамика 16:00–17:15, потом 5 мин пешком на концерт COC в 17:30. Оба места рядом в Queen's Park."
+  },
+  { date:"2026-05-22", time:"13:00", type:"gallery", venue:"powerplant",
+    title:"The Power Plant — после COC",
+    desc:"После обеденного концерта — прогулка к озеру и галерея современного искусства Power Plant. Всегда бесплатно круглый год."
+  },
+  { date:"2026-05-23", time:"10:00", type:"heritage", venue:"r401",
+    title:"⭐ 401 Richmond — Doors Open арт-хаб",
+    desc:"Открытые двери в художественном здании 401 Richmond. Десятки галерей, студий и мастерских открывают двери — заходи в любую, всё бесплатно. Открыто 10:00–17:00."
+  },
+  { date:"2026-05-23", time:"12:00", type:"gallery", venue:"r401",
+    title:"Tangled Art + Disability",
+    desc:"Уникальная галерея об искусстве людей с инвалидностью. В том же здании 401 Richmond, можно зайти после остальных. Бесплатно, до 17:00."
+  },
+  { date:"2026-05-24", time:"14:00", type:"fashion", venue:"bata",
+    title:"Bata Shoe Museum — воскресенье",
+    desc:"После полуденного концерта в RCM — Музей обуви бесплатно по воскресеньям. Открыто до 17:00."
+  },
+  { date:"2026-05-27", time:"16:00", type:"ceramics", venue:"gardiner",
+    title:"Gardiner Museum — спокойная среда",
+    desc:"Без концертов в этот день — отличный спокойный музейный вечер. Бесплатно после 16:00, керамика всех эпох."
+  },
+  { date:"2026-05-29", time:"13:00", type:"gallery", venue:"powerplant",
+    title:"The Power Plant — после COC",
+    desc:"После обеденного showcase концерта в COC — пешая прогулка к озеру, галерея современного искусства. Всегда бесплатно."
+  },
+  { date:"2026-05-30", time:"13:00", type:"gallery", venue:"artmuseum",
+    title:"Art Museum at UofT",
+    desc:"Бесплатная галерея перед вечерним концертом сопрано. Спокойная небольшая выставка — не утомительно."
+  },
+  { date:"2026-05-31", time:"14:00", type:"fashion", venue:"bata",
+    title:"Bata Shoe Museum — последнее воскресенье мая",
+    desc:"Завершить май в Музее обуви: бесплатно по воскресеньям, до 17:00. Потом — фортепианный концерт в RCM в 19:00."
   }
 ];
 
 // --- helpers ---
-function eventDateTime(e){
-  return new Date(e.date + "T" + e.time + ":00-04:00");
-}
+function eventDateTime(e){ return new Date(e.date + "T" + e.time + ":00-04:00"); }
 function isPast(e){
-  const dt = eventDateTime(e);
-  const end = new Date(dt.getTime() + 90*60*1000); // event "active" 90 min
+  const end = new Date(eventDateTime(e).getTime() + 90*60*1000);
   return end < TODAY;
 }
 function dayLabel(dateStr){
   const d = new Date(dateStr + "T12:00:00-04:00");
-  const days = ["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
-  const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
-  return days[d.getDay()] + ", " + d.getDate() + " " + months[d.getMonth()];
+  const days = ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+  return days[d.getDay()] + ", " + d.getDate() + " мая";
 }
 function isToday(dateStr){
   const d = new Date(dateStr + "T12:00:00-04:00");
@@ -703,81 +890,173 @@ function mapsLink(venue){
   const d = venue.mapDest || encodeURIComponent(venue.addr + " Toronto");
   return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${d}&travelmode=walking`;
 }
+function multiStopMapsLink(venuesInOrder){
+  // Dedupe consecutive same venues
+  const stops = [];
+  venuesInOrder.forEach(v => {
+    if(!stops.length || stops[stops.length-1].mapDest !== v.mapDest) stops.push(v);
+  });
+  if(stops.length === 0) return null;
+  if(stops.length === 1) return mapsLink(stops[0]);
+  const o = encodeURIComponent(ORIGIN_NAME);
+  const dest = stops[stops.length-1].mapDest;
+  const wp = stops.slice(0,-1).map(v => v.mapDest).join("|");
+  return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${dest}&waypoints=${wp}&travelmode=walking`;
+}
 
-// --- render ---
+// Group events by date
+const byDate = {};
+EVENTS.forEach(e => {
+  if(!byDate[e.date]) byDate[e.date] = [];
+  byDate[e.date].push(e);
+});
+Object.values(byDate).forEach(arr => arr.sort((a,b) => a.time.localeCompare(b.time)));
+const sortedDates = Object.keys(byDate).sort();
+
+// --- render filter chips ---
+const filtersEl = document.getElementById("filters");
+const counts = {all:0, concert:0, art:0, dance:0, theatre:0};
+EVENTS.forEach(e => {
+  const c = TYPE_META[e.type].cat;
+  counts.all++;
+  if(counts[c] != null) counts[c]++;
+});
+let activeFilter = localStorage.getItem("concerts-filter") || "all";
+CATEGORIES.forEach(cat => {
+  const b = document.createElement("button");
+  b.className = "chip" + (cat.id === activeFilter ? " active" : "");
+  b.dataset.filter = cat.id;
+  b.innerHTML = `${cat.label} <span class="count">${counts[cat.id]}</span>`;
+  b.addEventListener("click", () => setFilter(cat.id));
+  filtersEl.appendChild(b);
+});
+function setFilter(id){
+  activeFilter = id;
+  localStorage.setItem("concerts-filter", id);
+  document.body.classList.remove("f-concert","f-art","f-dance","f-theatre");
+  if(id !== "all") document.body.classList.add("f-" + id);
+  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.filter === id));
+}
+setFilter(activeFilter);
+
+// --- render days ---
 const list = document.getElementById("list");
 let firstUpcomingId = null;
-let lastDay = null;
+let firstUpcomingDayId = null;
 
-EVENTS.sort((a,b)=>eventDateTime(a)-eventDateTime(b)).forEach((e,i)=>{
-  const past = isPast(e);
-  const venue = VENUES[e.venue];
-  const t = TYPE_META[e.type];
-  const id = "ev-" + i;
+sortedDates.forEach((date, dayIdx) => {
+  const events = byDate[date];
+  const allPast = events.every(isPast);
+  const dayId = "day-" + date;
+  const cats = [...new Set(events.map(e => TYPE_META[e.type].cat))];
+  const today = isToday(date);
 
-  if(!past && firstUpcomingId === null) firstUpcomingId = id;
+  // category breakdown
+  const catCounts = {};
+  events.forEach(e => {
+    const c = TYPE_META[e.type].cat;
+    catCounts[c] = (catCounts[c]||0) + 1;
+  });
+  const breakdown = Object.entries(catCounts).map(([c, n]) => {
+    const map = {concert:"🎼 концерт", art:"🎨 искусство", dance:"💃 танец", theatre:"📖 театр"};
+    const labels = {concert:"концерт", art:"искусство", dance:"танец", theatre:"театр"};
+    const icons = {concert:"🎼", art:"🎨", dance:"💃", theatre:"📖"};
+    return `${icons[c]} ${n}`;
+  }).join(' <span class="dot">·</span> ');
 
-  // day divider
-  if(e.date !== lastDay){
-    const div = document.createElement("div");
-    div.className = "day-divider" + (isToday(e.date) ? " today" : "");
-    div.textContent = dayLabel(e.date) + (isToday(e.date) ? " · сегодня" : "");
-    list.appendChild(div);
-    lastDay = e.date;
-  }
+  // Build day section
+  const day = document.createElement("section");
+  day.className = "day" + (today ? " today" : "") + (allPast ? " past" : "");
+  day.id = dayId;
+  day.dataset.cats = cats.join(" ");
 
-  const card = document.createElement("article");
-  card.className = "card" + (past ? " past" : "");
-  card.id = id;
+  // Multi-stop route only when 2+ unique venues and not all past
+  const uniqueVenues = [];
+  events.forEach(e => {
+    const v = VENUES[e.venue];
+    if(v && v.km != null && !uniqueVenues.find(x => x.mapDest === v.mapDest)){
+      uniqueVenues.push(v);
+    }
+  });
+  const showRoute = !allPast && uniqueVenues.length >= 2;
+  const routeBtn = showRoute
+    ? `<a class="day-route" href="${multiStopMapsLink(events.map(e => VENUES[e.venue]).filter(v => v && v.km != null))}" target="_blank" rel="noopener">Маршрут на день · ${uniqueVenues.length} мест</a>`
+    : "";
 
-  const isNext = !past && firstUpcomingId === id;
-  if(isNext) card.classList.add("next","open");
-
-  const walkHTML = venue.km != null
-    ? `<div class="walk">
-         <span class="lead">🚶</span>
-         <div>пешком <b>${fmtMin(venue.min)}</b> · <b>${fmtKm(venue.km)}</b><br>
-              <small style="color:var(--muted)">${venue.name}, ${venue.addr}</small></div>
-       </div>`
-    : `<div class="walk">
-         <span class="lead">🗺️</span>
-         <div>${venue.name}<br><small style="color:var(--muted)">${venue.addr}</small></div>
-       </div>`;
-
-  card.innerHTML = `
-    <div class="hero" style="background-image:url('images/${e.type}.jpg')">
-      <span class="icon">${t.icon}</span>
-      <span class="date">${e.time}</span>
+  day.innerHTML = `
+    <div class="day-head">
+      <h3 class="day-name">${dayLabel(date)}</h3>
+      <p class="day-stats">${events.length} ${events.length === 1 ? "событие" : (events.length < 5 ? "события" : "событий")} <span class="dot">·</span> ${breakdown}</p>
+      ${routeBtn}
     </div>
-    <div class="body">
-      <h2 class="title">${e.title}</h2>
-      <div class="meta">
-        <span class="type">${t.icon} ${t.label}</span>
-        <span class="pill">Бесплатно</span>
-      </div>
-      <p class="desc">${e.desc}</p>
-      ${walkHTML}
-      <div class="actions">
-        <a class="btn primary" href="${mapsLink(venue)}" target="_blank" rel="noopener">Маршрут</a>
-        <a class="btn ghost" href="${venue.site}" target="_blank" rel="noopener">Сайт</a>
-        <button class="btn ghost" data-toggle aria-label="Развернуть">${isNext ? "▲" : "▼"}</button>
-      </div>
-    </div>
+    <div class="day-cards"></div>
   `;
+  const cardsEl = day.querySelector(".day-cards");
 
-  card.querySelector("[data-toggle]").addEventListener("click",()=>{
-    card.classList.toggle("open");
-    const btn = card.querySelector("[data-toggle]");
-    btn.textContent = card.classList.contains("open") ? "▲" : "▼";
+  events.forEach((e, i) => {
+    const past = isPast(e);
+    const venue = VENUES[e.venue];
+    const t = TYPE_META[e.type];
+    const id = "ev-" + date + "-" + i;
+    if(!past && firstUpcomingId === null){
+      firstUpcomingId = id;
+      firstUpcomingDayId = dayId;
+    }
+    const card = document.createElement("article");
+    card.className = "card" + (past ? " past" : "");
+    card.id = id;
+    card.dataset.cat = t.cat;
+    const isNext = !past && firstUpcomingId === id;
+    if(isNext) card.classList.add("next","open");
+
+    const walkHTML = venue.km != null
+      ? `<div class="walk">
+           <span class="lead">🚶</span>
+           <div>пешком <b>${fmtMin(venue.min)}</b> · <b>${fmtKm(venue.km)}</b><br>
+                <small>${venue.name}, ${venue.addr}</small></div>
+         </div>`
+      : `<div class="walk">
+           <span class="lead">🗺️</span>
+           <div>${venue.name}<br><small>${venue.addr}</small></div>
+         </div>`;
+
+    card.innerHTML = `
+      <div class="hero" style="background-image:url('images/${e.type}.jpg')">
+        <span class="icon">${t.icon}</span>
+        <span class="date">${e.time}</span>
+      </div>
+      <div class="body">
+        <h2 class="title">${e.title}</h2>
+        <div class="meta">
+          <span class="type">${t.icon} ${t.label}</span>
+          <span class="pill">Бесплатно</span>
+        </div>
+        <p class="desc">${e.desc}</p>
+        ${walkHTML}
+        <div class="actions">
+          <a class="btn primary" href="${mapsLink(venue)}" target="_blank" rel="noopener">Маршрут</a>
+          <a class="btn ghost" href="${venue.site}" target="_blank" rel="noopener">Сайт</a>
+          <button class="btn ghost" data-toggle aria-label="Развернуть">${isNext ? "▲" : "▼"}</button>
+        </div>
+      </div>
+    `;
+    card.querySelector("[data-toggle]").addEventListener("click",()=>{
+      card.classList.toggle("open");
+      card.querySelector("[data-toggle]").textContent = card.classList.contains("open") ? "▲" : "▼";
+    });
+    cardsEl.appendChild(card);
   });
 
-  list.appendChild(card);
+  list.appendChild(day);
 });
 
-// scroll to first upcoming
-if(firstUpcomingId){
+// scroll to today's day section if it has events, else first upcoming day
+const todayKey = TODAY.toISOString().slice(0,10);
+const todayDayEl = document.getElementById("day-" + todayKey);
+const targetDayEl = todayDayEl || (firstUpcomingDayId ? document.getElementById(firstUpcomingDayId) : null);
+if(targetDayEl){
   requestAnimationFrame(()=>{
-    document.getElementById(firstUpcomingId).scrollIntoView({behavior:"instant", block:"start"});
+    targetDayEl.scrollIntoView({behavior:"instant", block:"start"});
     requestAnimationFrame(initStickyHeader);
   });
 } else {
@@ -788,18 +1067,13 @@ function initStickyHeader(){
   const header = document.querySelector("header");
   let ticking = false;
   const update = () => {
-    const y = window.scrollY;
-    if(y > 40) header.classList.add("scrolled");
+    if(window.scrollY > 40) header.classList.add("scrolled");
     else header.classList.remove("scrolled");
     ticking = false;
   };
-  // sync to current scroll position (since auto-scroll already happened)
   update();
   window.addEventListener("scroll", () => {
-    if(!ticking){
-      requestAnimationFrame(update);
-      ticking = true;
-    }
+    if(!ticking){ requestAnimationFrame(update); ticking = true; }
   }, {passive:true});
 }
 </script>
